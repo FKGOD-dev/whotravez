@@ -123,6 +123,63 @@ getGachaRates.OnServerInvoke = function(player)
     return GachaCore.GetAdjustedProbabilities(player.UserId)
 end
 
+buyTickets.OnServerInvoke = function(player, ticketType, quantity)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "BuyTickets", {
+        ticketType = ticketType,
+        quantity = quantity
+    })
+    
+    if not authorized then
+        warn("BuyTickets bloqueado para " .. player.Name .. ": " .. reason)
+        return false, "Acción no autorizada: " .. reason
+    end
+    
+    -- Validar parámetros
+    if not ticketType or (ticketType ~= "FREE" and ticketType ~= "PREMIUM") then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "BuyTickets", param = "ticketType"})
+        return false, "Tipo de ticket inválido"
+    end
+    
+    if not quantity or type(quantity) ~= "number" or quantity < 1 or quantity > 1000 then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "BuyTickets", param = "quantity"})
+        return false, "Cantidad inválida"
+    end
+    
+    local playerData = CharacterDatabase.LoadPlayerData(playerId)
+    if not playerData then
+        return false, "Datos del jugador no encontrados"
+    end
+    
+    -- Calcular costo
+    local costPerTicket = ticketType == "FREE" and 100 or 50 -- 100 monedas por ticket gratis, 50 por premium
+    local totalCost = costPerTicket * quantity
+    
+    -- Verificar si tiene suficientes monedas
+    if playerData.currency.coins < totalCost then
+        return false, "Monedas insuficientes"
+    end
+    
+    -- Realizar la compra
+    local success = CharacterDatabase.UpdatePlayerCurrency(playerId, {
+        coins = -totalCost,
+        freeTickets = ticketType == "FREE" and quantity or 0,
+        premiumTickets = ticketType == "PREMIUM" and quantity or 0
+    })
+    
+    if success then
+        -- Actualizar moneda en el cliente
+        local newCurrency = CharacterDatabase.LoadPlayerData(playerId).currency
+        currencyUpdated:FireClient(player, newCurrency)
+        
+        return true, nil
+    else
+        return false, "Error al procesar la compra"
+    end
+end
+
 -- === HANDLERS DE PERSONAJES ===
 getPlayerCharacters.OnServerInvoke = function(player)
     local playerId = player.UserId
@@ -286,6 +343,64 @@ getArenaOpponents.OnServerInvoke = function(player, count)
     end
     
     return BattleManager.GenerateAIOpponents(avgLevel, count)
+end
+
+setDefenseTeam.OnServerInvoke = function(player, teamCharacterIds)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "SetDefenseTeam")
+    if not authorized then
+        warn("SetDefenseTeam bloqueado para " .. player.Name .. ": " .. reason)
+        return false, "Acción no autorizada: " .. reason
+    end
+    
+    -- Validar parámetros
+    if not teamCharacterIds or type(teamCharacterIds) ~= "table" then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "SetDefenseTeam", param = "teamCharacterIds"})
+        return false, "Lista de personajes inválida"
+    end
+    
+    if #teamCharacterIds > 5 then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "SetDefenseTeam", param = "teamSize"})
+        return false, "El equipo no puede tener más de 5 personajes"
+    end
+    
+    -- Verificar que todos los personajes pertenecen al jugador
+    local validCharacters = {}
+    for _, characterId in ipairs(teamCharacterIds) do
+        if type(characterId) ~= "string" then
+            SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "SetDefenseTeam", param = "characterId"})
+            return false, "ID de personaje inválido"
+        end
+        
+        local character = CharacterDatabase.LoadCharacter(characterId)
+        if not character or character.ownerId ~= tostring(playerId) then
+            SecuritySystem.AddViolation(playerId, "OWNERSHIP_VIOLATION", {
+                action = "SetDefenseTeam",
+                characterId = characterId
+            })
+            return false, "Uno o más personajes no te pertenecen"
+        end
+        
+        table.insert(validCharacters, character)
+    end
+    
+    -- Guardar equipo de defensa
+    local playerData = CharacterDatabase.LoadPlayerData(playerId)
+    if not playerData then
+        return false, "Datos del jugador no encontrados"
+    end
+    
+    playerData.defenseTeam = teamCharacterIds
+    local success = CharacterDatabase.SavePlayerData(playerId, playerData)
+    
+    if success then
+        print("✅ Equipo de defensa actualizado para " .. player.Name .. " con " .. #teamCharacterIds .. " personajes")
+        return true, nil
+    else
+        return false, "Error al guardar el equipo de defensa"
+    end
 end
 
 -- === EVENTOS DE CONEXIÓN DE JUGADORES ===
