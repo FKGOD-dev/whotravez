@@ -14,6 +14,7 @@ local BattleManager = require(script.Parent.CombatSystem.BattleManager)
 local TrainingSystem = require(script.Parent.CombatSystem.TrainingSystem)
 local PurchaseHandler = require(script.Parent.MonetizationSystem.PurchaseHandler)
 local SkinManager = require(script.Parent.MonetizationSystem.SkinManager)
+local MarketplaceHandler = require(script.Parent.MonetizationSystem.MarketplaceHandler)
 local SecuritySystem = require(script.Parent.SecuritySystem)
 
 -- Obtener eventos remotos
@@ -499,6 +500,148 @@ game.Players.PlayerAdded:Connect(function(player)
         end
     end)
 end)
+
+-- === HANDLERS DE TIENDA Y MARKETPLACE ===
+local promptPurchase = eventsFolder:WaitForChild("PromptPurchase")
+local buyGameItem = eventsFolder:WaitForChild("BuyGameItem")
+local getPurchaseHistory = eventsFolder:WaitForChild("GetPurchaseHistory")
+local getActiveBoosts = eventsFolder:WaitForChild("GetActiveBoosts")
+local getActivePasses = eventsFolder:WaitForChild("GetActivePasses")
+
+promptPurchase.OnServerInvoke = function(player, productId)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "PromptPurchase")
+    if not authorized then
+        warn("PromptPurchase bloqueado para " .. player.Name .. ": " .. reason)
+        return false, "Acceso denegado"
+    end
+    
+    return MarketplaceHandler.PromptPurchase(player, productId)
+end
+
+buyGameItem.OnServerInvoke = function(player, itemName, cost, currency)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "BuyGameItem")
+    if not authorized then
+        warn("BuyGameItem bloqueado para " .. player.Name .. ": " .. reason)
+        return false, "Acceso denegado"
+    end
+    
+    -- Verificar que el jugador tenga suficiente moneda
+    local playerData = CharacterDatabase.LoadPlayerData(playerId)
+    if not playerData then
+        return false, "Error cargando datos del jugador"
+    end
+    
+    local currentAmount = 0
+    if currency == "coins" then
+        currentAmount = playerData.currency.coins or 0
+    elseif currency == "tickets" then
+        currentAmount = playerData.currency.tickets or 0
+    elseif currency == "premium" then
+        currentAmount = playerData.currency.premiumCurrency or 0
+    else
+        return false, "Moneda inválida"
+    end
+    
+    if currentAmount < cost then
+        return false, "No tienes suficiente " .. currency
+    end
+    
+    -- Procesar compra según el item
+    local success = false
+    local currencyUpdate = {}
+    
+    if itemName == "Boost XP x2" then
+        success = MarketplaceHandler.GrantBoost(playerId, {
+            effect = "xp_double",
+            duration = 3600,
+            name = itemName
+        })
+        currencyUpdate[currency] = -cost
+        
+    elseif itemName == "Gacha Gratis" then
+        -- Dar tickets gratis
+        success = CharacterDatabase.UpdatePlayerCurrency(playerId, {tickets = 1})
+        currencyUpdate[currency] = -cost
+        
+    elseif itemName == "Auto-Training" then
+        success = MarketplaceHandler.GrantBoost(playerId, {
+            effect = "auto_training",
+            duration = 86400,
+            name = itemName
+        })
+        currencyUpdate[currency] = -cost
+        
+    elseif itemName == "Luck Boost" then
+        success = MarketplaceHandler.GrantBoost(playerId, {
+            effect = "luck_boost",
+            duration = 7200,
+            name = itemName
+        })
+        currencyUpdate[currency] = -cost
+    else
+        return false, "Item no válido"
+    end
+    
+    if success and next(currencyUpdate) then
+        CharacterDatabase.UpdatePlayerCurrency(playerId, currencyUpdate)
+        
+        -- Notificar compra exitosa
+        local purchaseSuccess = eventsFolder:FindFirstChild("PurchaseSuccess")
+        if purchaseSuccess then
+            purchaseSuccess:FireClient(player, {name = itemName, type = "game_item"})
+        end
+        
+        return true, "Compra exitosa"
+    end
+    
+    return false, "Error procesando compra"
+end
+
+getPurchaseHistory.OnServerInvoke = function(player)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "GetPurchaseHistory")
+    if not authorized then
+        warn("GetPurchaseHistory bloqueado para " .. player.Name .. ": " .. reason)
+        return {}
+    end
+    
+    local playerData = CharacterDatabase.LoadPlayerData(playerId)
+    return playerData and playerData.purchaseHistory or {}
+end
+
+getActiveBoosts.OnServerInvoke = function(player)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "GetActiveBoosts")
+    if not authorized then
+        warn("GetActiveBoosts bloqueado para " .. player.Name .. ": " .. reason)
+        return {}
+    end
+    
+    return MarketplaceHandler.GetActiveBoosts(playerId)
+end
+
+getActivePasses.OnServerInvoke = function(player)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "GetActivePasses")
+    if not authorized then
+        warn("GetActivePasses bloqueado para " .. player.Name .. ": " .. reason)
+        return {}
+    end
+    
+    return MarketplaceHandler.GetActivePasses(playerId)
+end
 
 print("🚀 Waifu & Husbando Collection Game iniciado correctamente!")
 print("📊 Sistemas activos:")

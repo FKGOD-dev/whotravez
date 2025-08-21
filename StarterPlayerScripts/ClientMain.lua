@@ -646,7 +646,7 @@ local function createTrainingPanel(parent)
     trainingFrame.Size = UDim2.new(1, -20, 1, -20)
     trainingFrame.Position = UDim2.new(0, 10, 0, 10)
     trainingFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
-    trainingFrame.CanvasSize = UDim2.new(0, 0, 0, 1200)
+    trainingFrame.CanvasSize = UDim2.new(0, 0, 0, 1400)
     trainingFrame.ScrollBarThickness = 10
     trainingFrame.Parent = parent
     trainingFrame.Visible = false
@@ -659,17 +659,61 @@ local function createTrainingPanel(parent)
     title.Size = UDim2.new(1, 0, 0, 50)
     title.Position = UDim2.new(0, 0, 0, 10)
     title.BackgroundTransparency = 1
-    title.Text = "💪 Sistema de Entrenamiento"
+    title.Text = "💪 Sistema de Entrenamiento Avanzado"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextScaled = true
     title.Font = Enum.Font.SourceSansBold
     title.Parent = trainingFrame
     
+    -- Panel de estadísticas de entrenamiento diario
+    local dailyStatsPanel = Instance.new("Frame")
+    dailyStatsPanel.Name = "DailyStatsPanel"
+    dailyStatsPanel.Size = UDim2.new(1, -20, 0, 80)
+    dailyStatsPanel.Position = UDim2.new(0, 10, 0, 70)
+    dailyStatsPanel.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    dailyStatsPanel.Parent = trainingFrame
+    
+    local dailyCorner = Instance.new("UICorner")
+    dailyCorner.CornerRadius = UDim.new(0, 10)
+    dailyCorner.Parent = dailyStatsPanel
+    
+    local dailyTitle = Instance.new("TextLabel")
+    dailyTitle.Size = UDim2.new(0.3, 0, 1, 0)
+    dailyTitle.Position = UDim2.new(0, 10, 0, 0)
+    dailyTitle.BackgroundTransparency = 1
+    dailyTitle.Text = "📊 Entrenamientos Hoy:"
+    dailyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dailyTitle.TextScaled = true
+    dailyTitle.Font = Enum.Font.SourceSansBold
+    dailyTitle.Parent = dailyStatsPanel
+    
+    local dailyCount = Instance.new("TextLabel")
+    dailyCount.Name = "DailyCount"
+    dailyCount.Size = UDim2.new(0.2, 0, 1, 0)
+    dailyCount.Position = UDim2.new(0.3, 10, 0, 0)
+    dailyCount.BackgroundTransparency = 1
+    dailyCount.Text = "0/5"
+    dailyCount.TextColor3 = Color3.fromRGB(0, 255, 127)
+    dailyCount.TextScaled = true
+    dailyCount.Font = Enum.Font.SourceSansBold
+    dailyCount.Parent = dailyStatsPanel
+    
+    local experienceGained = Instance.new("TextLabel")
+    experienceGained.Name = "ExperienceGained"
+    experienceGained.Size = UDim2.new(0.5, 0, 1, 0)
+    experienceGained.Position = UDim2.new(0.5, 0, 0, 0)
+    experienceGained.BackgroundTransparency = 1
+    experienceGained.Text = "⭐ EXP Total Ganada Hoy: 0"
+    experienceGained.TextColor3 = Color3.fromRGB(255, 215, 0)
+    experienceGained.TextScaled = true
+    experienceGained.Font = Enum.Font.SourceSansBold
+    experienceGained.Parent = dailyStatsPanel
+    
     -- Panel de personajes disponibles para entrenar
     local availablePanel = Instance.new("Frame")
     availablePanel.Name = "AvailableCharactersPanel"
     availablePanel.Size = UDim2.new(1, -20, 0, 350)
-    availablePanel.Position = UDim2.new(0, 10, 0, 70)
+    availablePanel.Position = UDim2.new(0, 10, 0, 160)
     availablePanel.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
     availablePanel.Parent = trainingFrame
     
@@ -705,8 +749,8 @@ local function createTrainingPanel(parent)
     -- Panel de tipos de entrenamiento
     local trainingTypesPanel = Instance.new("Frame")
     trainingTypesPanel.Name = "TrainingTypesPanel"
-    trainingTypesPanel.Size = UDim2.new(1, -20, 0, 200)
-    trainingTypesPanel.Position = UDim2.new(0, 10, 0, 440)
+    trainingTypesPanel.Size = UDim2.new(1, -20, 0, 260)
+    trainingTypesPanel.Position = UDim2.new(0, 10, 0, 520)
     trainingTypesPanel.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
     trainingTypesPanel.Parent = trainingFrame
     
@@ -718,44 +762,76 @@ local function createTrainingPanel(parent)
     typesTitle.Size = UDim2.new(1, 0, 0, 30)
     typesTitle.Position = UDim2.new(0, 0, 0, 5)
     typesTitle.BackgroundTransparency = 1
-    typesTitle.Text = "Tipos de Entrenamiento"
+    typesTitle.Text = "🎯 Tipos de Entrenamiento Especializado"
     typesTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
     typesTitle.TextScaled = true
     typesTitle.Font = Enum.Font.SourceSansBold
     typesTitle.Parent = trainingTypesPanel
     
     local trainingTypes = {
-        {name = "ATK", icon = "⚔️", color = Color3.fromRGB(255, 100, 100), duration = "2 min", cost = "50 💰"},
-        {name = "DEF", icon = "🛡️", color = Color3.fromRGB(100, 100, 255), duration = "2 min", cost = "50 💰"},
-        {name = "HP", icon = "❤️", color = Color3.fromRGB(100, 255, 100), duration = "3 min", cost = "75 💰"},
-        {name = "SPD", icon = "💨", color = Color3.fromRGB(255, 255, 100), duration = "1.5 min", cost = "40 💰"}
+        {name = "STRENGTH", icon = "⚔️", color = Color3.fromRGB(255, 100, 100), duration = "30 min", cost = "100 💰", description = "Mejora Fuerza +2-5"},
+        {name = "INTELLIGENCE", icon = "🧠", color = Color3.fromRGB(100, 100, 255), duration = "30 min", cost = "100 💰", description = "Mejora Inteligencia +2-5"},
+        {name = "SPEED", icon = "💨", color = Color3.fromRGB(100, 255, 100), duration = "30 min", cost = "100 💰", description = "Mejora Velocidad +2-5"},
+        {name = "RESISTANCE", icon = "🛡️", color = Color3.fromRGB(255, 255, 100), duration = "30 min", cost = "100 💰", description = "Mejora Resistencia +2-5"},
+        {name = "CHARM", icon = "💖", color = Color3.fromRGB(255, 100, 255), duration = "30 min", cost = "100 💰", description = "Mejora Carisma +2-5"},
+        {name = "LUCK", icon = "🍀", color = Color3.fromRGB(0, 255, 127), duration = "45 min", cost = "150 💰", description = "Mejora Suerte +1-3"},
+        {name = "BALANCED", icon = "⚖️", color = Color3.fromRGB(200, 200, 200), duration = "60 min", cost = "300 💰", description = "Mejora Todos +1-2"}
     }
     
     local trainingButtons = {}
+    
+    -- Crear grid para los botones
+    local trainingGrid = Instance.new("Frame")
+    trainingGrid.Name = "TrainingGrid"
+    trainingGrid.Size = UDim2.new(1, -20, 1, -40)
+    trainingGrid.Position = UDim2.new(0, 10, 0, 35)
+    trainingGrid.BackgroundTransparency = 1
+    trainingGrid.Parent = trainingTypesPanel
+    
+    local gridLayout = Instance.new("UIGridLayout")
+    gridLayout.CellSize = UDim2.new(0.32, 0, 0, 100)
+    gridLayout.CellPadding = UDim2.new(0.01, 0, 0, 10)
+    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    gridLayout.Parent = trainingGrid
+    
     for i, trainingType in ipairs(trainingTypes) do
         local typeBtn = Instance.new("TextButton")
         typeBtn.Name = "TrainingType" .. trainingType.name
-        typeBtn.Size = UDim2.new(0.23, 0, 0, 120)
-        typeBtn.Position = UDim2.new((i-1)*0.25, 10, 0, 45)
+        typeBtn.LayoutOrder = i
         typeBtn.BackgroundColor3 = trainingType.color
-        typeBtn.Text = trainingType.icon .. "\n" .. trainingType.name .. "\n\n" .. trainingType.duration .. "\n" .. trainingType.cost
+        typeBtn.Text = trainingType.icon .. " " .. trainingType.name .. "\n" .. trainingType.duration .. " | " .. trainingType.cost .. "\n" .. trainingType.description
         typeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         typeBtn.TextScaled = true
         typeBtn.Font = Enum.Font.SourceSansBold
-        typeBtn.Parent = trainingTypesPanel
+        typeBtn.Parent = trainingGrid
         
         local typeBtnCorner = Instance.new("UICorner")
         typeBtnCorner.CornerRadius = UDim.new(0, 8)
         typeBtnCorner.Parent = typeBtn
         
+        -- Efecto hover
+        typeBtn.MouseEnter:Connect(function()
+            local tween = TweenService:Create(typeBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.new(
+                math.min(trainingType.color.R * 1.2, 1),
+                math.min(trainingType.color.G * 1.2, 1), 
+                math.min(trainingType.color.B * 1.2, 1)
+            )})
+            tween:Play()
+        end)
+        
+        typeBtn.MouseLeave:Connect(function()
+            local tween = TweenService:Create(typeBtn, TweenInfo.new(0.2), {BackgroundColor3 = trainingType.color})
+            tween:Play()
+        end)
+        
         trainingButtons[trainingType.name] = typeBtn
     end
     
-    -- Panel de entrenamiento activo
+    -- Panel de entrenamiento activo con progreso en tiempo real
     local activePanel = Instance.new("Frame")
     activePanel.Name = "ActiveTrainingPanel"
-    activePanel.Size = UDim2.new(1, -20, 0, 300)
-    activePanel.Position = UDim2.new(0, 10, 0, 660)
+    activePanel.Size = UDim2.new(1, -20, 0, 400)
+    activePanel.Position = UDim2.new(0, 10, 0, 790)
     activePanel.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
     activePanel.Parent = trainingFrame
     
@@ -764,10 +840,10 @@ local function createTrainingPanel(parent)
     activeCorner.Parent = activePanel
     
     local activeTitle = Instance.new("TextLabel")
-    activeTitle.Size = UDim2.new(1, 0, 0, 30)
+    activeTitle.Size = UDim2.new(1, 0, 0, 40)
     activeTitle.Position = UDim2.new(0, 0, 0, 5)
     activeTitle.BackgroundTransparency = 1
-    activeTitle.Text = "Entrenamientos Activos"
+    activeTitle.Text = "⏳ Entrenamientos en Progreso - Tiempo Real"
     activeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
     activeTitle.TextScaled = true
     activeTitle.Font = Enum.Font.SourceSansBold
@@ -787,7 +863,34 @@ local function createTrainingPanel(parent)
     activeLayout.Padding = UDim.new(0, 5)
     activeLayout.Parent = activeScroll
     
-    return trainingFrame, charactersScroll, trainingButtons, activeScroll, availablePanel
+    -- Botón para acelerar entrenamiento premium
+    local boostPanel = Instance.new("Frame")
+    boostPanel.Name = "BoostPanel"
+    boostPanel.Size = UDim2.new(1, -20, 0, 60)
+    boostPanel.Position = UDim2.new(0, 10, 1, -70)
+    boostPanel.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
+    boostPanel.Parent = activePanel
+    
+    local boostCorner = Instance.new("UICorner")
+    boostCorner.CornerRadius = UDim.new(0, 8)
+    boostCorner.Parent = boostPanel
+    
+    local boostBtn = Instance.new("TextButton")
+    boostBtn.Name = "BoostButton"
+    boostBtn.Size = UDim2.new(1, -10, 1, -10)
+    boostBtn.Position = UDim2.new(0, 5, 0, 5)
+    boostBtn.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
+    boostBtn.Text = "⚡ Acelerar Entrenamientos (50 💎) - ¡Completar al Instante!"
+    boostBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    boostBtn.TextScaled = true
+    boostBtn.Font = Enum.Font.SourceSansBold
+    boostBtn.Parent = boostPanel
+    
+    local boostBtnCorner = Instance.new("UICorner")
+    boostBtnCorner.CornerRadius = UDim.new(0, 6)
+    boostBtnCorner.Parent = boostBtn
+    
+    return trainingFrame, charactersScroll, trainingButtons, activeScroll, availablePanel, dailyStatsPanel, boostBtn
 end
 
 local function createShopPanel(parent)
@@ -796,7 +899,7 @@ local function createShopPanel(parent)
     shopFrame.Size = UDim2.new(1, -20, 1, -20)
     shopFrame.Position = UDim2.new(0, 10, 0, 10)
     shopFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
-    shopFrame.CanvasSize = UDim2.new(0, 0, 0, 1500)
+    shopFrame.CanvasSize = UDim2.new(0, 0, 0, 2000)
     shopFrame.ScrollBarThickness = 10
     shopFrame.Parent = parent
     shopFrame.Visible = false
@@ -805,71 +908,436 @@ local function createShopPanel(parent)
     corner.CornerRadius = UDim.new(0, 15)
     corner.Parent = shopFrame
     
+    -- Header con título y balance
+    local headerFrame = Instance.new("Frame")
+    headerFrame.Size = UDim2.new(1, -20, 0, 80)
+    headerFrame.Position = UDim2.new(0, 10, 0, 10)
+    headerFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    headerFrame.Parent = shopFrame
+    
+    local headerCorner = Instance.new("UICorner")
+    headerCorner.CornerRadius = UDim.new(0, 12)
+    headerCorner.Parent = headerFrame
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(0.5, 0, 1, 0)
+    title.Position = UDim2.new(0, 15, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "🛒 Tienda Premium & Marketplace"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.SourceSansBold
+    title.Parent = headerFrame
+    
+    -- Panel de balance actual
+    local balancePanel = Instance.new("Frame")
+    balancePanel.Size = UDim2.new(0.45, 0, 0.8, 0)
+    balancePanel.Position = UDim2.new(0.5, 10, 0.1, 0)
+    balancePanel.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
+    balancePanel.Parent = headerFrame
+    
+    local balanceCorner = Instance.new("UICorner")
+    balanceCorner.CornerRadius = UDim.new(0, 8)
+    balanceCorner.Parent = balancePanel
+    
+    local balanceLabel = Instance.new("TextLabel")
+    balanceLabel.Name = "BalanceLabel"
+    balanceLabel.Size = UDim2.new(1, -10, 1, 0)
+    balanceLabel.Position = UDim2.new(0, 5, 0, 0)
+    balanceLabel.BackgroundTransparency = 1
+    balanceLabel.Text = "💰 0  |  🎫 0  |  💎 0"
+    balanceLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
+    balanceLabel.TextScaled = true
+    balanceLabel.Font = Enum.Font.SourceSansBold
+    balanceLabel.Parent = balancePanel
+    
+    -- Sección de Moneda Premium (Robux)
+    local robuxSection = Instance.new("Frame")
+    robuxSection.Name = "RobuxSection"
+    robuxSection.Size = UDim2.new(1, -20, 0, 350)
+    robuxSection.Position = UDim2.new(0, 10, 0, 100)
+    robuxSection.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+    robuxSection.Parent = shopFrame
+    
+    local robuxCorner = Instance.new("UICorner")
+    robuxCorner.CornerRadius = UDim.new(0, 10)
+    robuxCorner.Parent = robuxSection
+    
+    local robuxTitle = Instance.new("TextLabel")
+    robuxTitle.Size = UDim2.new(1, 0, 0, 40)
+    robuxTitle.Position = UDim2.new(0, 0, 0, 10)
+    robuxTitle.BackgroundTransparency = 1
+    robuxTitle.Text = "💎 Packs de Moneda Premium - ¡Compra con Robux!"
+    robuxTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    robuxTitle.TextScaled = true
+    robuxTitle.Font = Enum.Font.SourceSansBold
+    robuxTitle.Parent = robuxSection
+    
+    -- Grid para productos de Robux
+    local robuxGrid = Instance.new("Frame")
+    robuxGrid.Size = UDim2.new(1, -20, 1, -55)
+    robuxGrid.Position = UDim2.new(0, 10, 0, 45)
+    robuxGrid.BackgroundTransparency = 1
+    robuxGrid.Parent = robuxSection
+    
+    local robuxLayout = Instance.new("UIGridLayout")
+    robuxLayout.CellSize = UDim2.new(0.32, 0, 0, 240)
+    robuxLayout.CellPadding = UDim2.new(0.01, 0, 0, 15)
+    robuxLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    robuxLayout.Parent = robuxGrid
+    
+    -- Productos reales con IDs de MarketplaceService
+    local robuxProducts = {
+        {
+            name = "Starter Pack", 
+            premium = 500, 
+            tickets = 10, 
+            coins = 5000,
+            robux = 80, 
+            productId = 1234567890, -- ID real del producto en Roblox
+            description = "Pack inicial perfecto\npara comenzar",
+            color = Color3.fromRGB(100, 200, 100),
+            popular = false
+        },
+        {
+            name = "Mega Pack", 
+            premium = 2000, 
+            tickets = 50, 
+            coins = 25000,
+            robux = 300, 
+            productId = 1234567891,
+            description = "El mejor valor\n¡Pack más popular!",
+            color = Color3.fromRGB(255, 150, 0),
+            popular = true
+        },
+        {
+            name = "Ultimate Pack", 
+            premium = 5000, 
+            tickets = 150, 
+            coins = 75000,
+            robux = 700, 
+            productId = 1234567892,
+            description = "Para los verdaderos\ncoleccionistas",
+            color = Color3.fromRGB(200, 100, 255),
+            popular = false
+        }
+    }
+    
+    -- Crear productos de Robux
+    local purchaseButtons = {}
+    for i, product in ipairs(robuxProducts) do
+        local productFrame = Instance.new("Frame")
+        productFrame.Name = "Product" .. i
+        productFrame.LayoutOrder = i
+        productFrame.BackgroundColor3 = product.color
+        productFrame.Parent = robuxGrid
+        
+        local productCorner = Instance.new("UICorner")
+        productCorner.CornerRadius = UDim.new(0, 12)
+        productCorner.Parent = productFrame
+        
+        -- Badge de popularidad
+        if product.popular then
+            local popularBadge = Instance.new("Frame")
+            popularBadge.Size = UDim2.new(0, 80, 0, 25)
+            popularBadge.Position = UDim2.new(0, -5, 0, -5)
+            popularBadge.BackgroundColor3 = Color3.fromRGB(255, 0, 100)
+            popularBadge.ZIndex = 2
+            popularBadge.Parent = productFrame
+            
+            local badgeCorner = Instance.new("UICorner")
+            badgeCorner.CornerRadius = UDim.new(0, 12)
+            badgeCorner.Parent = popularBadge
+            
+            local badgeLabel = Instance.new("TextLabel")
+            badgeLabel.Size = UDim2.new(1, 0, 1, 0)
+            badgeLabel.BackgroundTransparency = 1
+            badgeLabel.Text = "🔥 POPULAR"
+            badgeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            badgeLabel.TextScaled = true
+            badgeLabel.Font = Enum.Font.SourceSansBold
+            badgeLabel.Parent = popularBadge
+        end
+        
+        -- Nombre del producto
+        local nameLabel = Instance.new("TextLabel")
+        nameLabel.Size = UDim2.new(1, -10, 0, 35)
+        nameLabel.Position = UDim2.new(0, 5, 0, 5)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = product.name
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextScaled = true
+        nameLabel.Font = Enum.Font.SourceSansBold
+        nameLabel.Parent = productFrame
+        
+        -- Descripción
+        local descLabel = Instance.new("TextLabel")
+        descLabel.Size = UDim2.new(1, -10, 0, 30)
+        descLabel.Position = UDim2.new(0, 5, 0, 40)
+        descLabel.BackgroundTransparency = 1
+        descLabel.Text = product.description
+        descLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+        descLabel.TextScaled = true
+        descLabel.Font = Enum.Font.SourceSans
+        descLabel.Parent = productFrame
+        
+        -- Panel de contenidos
+        local contentsFrame = Instance.new("Frame")
+        contentsFrame.Size = UDim2.new(1, -10, 0, 100)
+        contentsFrame.Position = UDim2.new(0, 5, 0, 75)
+        contentsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        contentsFrame.Parent = productFrame
+        
+        local contentsCorner = Instance.new("UICorner")
+        contentsCorner.CornerRadius = UDim.new(0, 8)
+        contentsCorner.Parent = contentsFrame
+        
+        local contentsList = Instance.new("TextLabel")
+        contentsList.Size = UDim2.new(1, -5, 1, 0)
+        contentsList.Position = UDim2.new(0, 5, 0, 0)
+        contentsList.BackgroundTransparency = 1
+        contentsList.Text = string.format("💎 %d Premium\n🎫 %d Tickets\n💰 %d Coins", 
+            product.premium, product.tickets, product.coins)
+        contentsList.TextColor3 = Color3.fromRGB(255, 215, 0)
+        contentsList.TextScaled = true
+        contentsList.Font = Enum.Font.SourceSansBold
+        contentsList.Parent = contentsFrame
+        
+        -- Botón de compra
+        local buyButton = Instance.new("TextButton")
+        buyButton.Name = "BuyButton"
+        buyButton.Size = UDim2.new(1, -10, 0, 45)
+        buyButton.Position = UDim2.new(0, 5, 1, -50)
+        buyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+        buyButton.Text = string.format("💰 Comprar - %d R$", product.robux)
+        buyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        buyButton.TextScaled = true
+        buyButton.Font = Enum.Font.SourceSansBold
+        buyButton.Parent = productFrame
+        
+        local buyCorner = Instance.new("UICorner")
+        buyCorner.CornerRadius = UDim.new(0, 8)
+        buyCorner.Parent = buyButton
+        
+        -- Efectos hover
+        buyButton.MouseEnter:Connect(function()
+            local tween = TweenService:Create(buyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 200, 0)})
+            tween:Play()
+        end)
+        
+        buyButton.MouseLeave:Connect(function()
+            local tween = TweenService:Create(buyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(0, 170, 0)})
+            tween:Play()
+        end)
+        
+        purchaseButtons[product.productId] = {button = buyButton, product = product}
+    end
+    
+    -- Sección de Items de Juego
+    local itemsSection = Instance.new("Frame")
+    itemsSection.Name = "ItemsSection"
+    itemsSection.Size = UDim2.new(1, -20, 0, 300)
+    itemsSection.Position = UDim2.new(0, 10, 0, 470)
+    itemsSection.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+    itemsSection.Parent = shopFrame
+    
+    local itemsCorner = Instance.new("UICorner")
+    itemsCorner.CornerRadius = UDim.new(0, 10)
+    itemsCorner.Parent = itemsSection
+    
+    local itemsTitle = Instance.new("TextLabel")
+    itemsTitle.Size = UDim2.new(1, 0, 0, 40)
+    itemsTitle.Position = UDim2.new(0, 0, 0, 10)
+    itemsTitle.BackgroundTransparency = 1
+    itemsTitle.Text = "🛍️ Items Especiales - Compra con Moneda del Juego"
+    itemsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    itemsTitle.TextScaled = true
+    itemsTitle.Font = Enum.Font.SourceSansBold
+    itemsTitle.Parent = itemsSection
+    
+    -- Items que se pueden comprar con moneda del juego
+    local gameItems = {
+        {name = "Boost XP x2", description = "Duplica XP por 1 hora", cost = 1000, currency = "coins", icon = "⚡", duration = "1h"},
+        {name = "Gacha Gratis", description = "1 pull gratis extra", cost = 5, currency = "tickets", icon = "🎰", duration = "Inmediato"},
+        {name = "Auto-Training", description = "Entrena automáticamente", cost = 50, currency = "premium", icon = "🤖", duration = "24h"},
+        {name = "Luck Boost", description = "Mejor suerte en gacha", cost = 2000, currency = "coins", icon = "🍀", duration = "2h"}
+    }
+    
+    local itemButtons = {}
+    for i, item in ipairs(gameItems) do
+        local itemFrame = Instance.new("Frame")
+        itemFrame.Size = UDim2.new(0.48, 0, 0, 100)
+        itemFrame.Position = UDim2.new((i-1) % 2 * 0.5, 10 + ((i-1) % 2) * 10, 0, 60 + math.floor((i-1) / 2) * 110)
+        itemFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
+        itemFrame.Parent = itemsSection
+        
+        local itemCorner = Instance.new("UICorner")
+        itemCorner.CornerRadius = UDim.new(0, 8)
+        itemCorner.Parent = itemFrame
+        
+        local iconLabel = Instance.new("TextLabel")
+        iconLabel.Size = UDim2.new(0, 50, 1, 0)
+        iconLabel.Position = UDim2.new(0, 5, 0, 0)
+        iconLabel.BackgroundTransparency = 1
+        iconLabel.Text = item.icon
+        iconLabel.TextScaled = true
+        iconLabel.Font = Enum.Font.SourceSans
+        iconLabel.Parent = itemFrame
+        
+        local nameLabel = Instance.new("TextLabel")
+        nameLabel.Size = UDim2.new(1, -60, 0, 25)
+        nameLabel.Position = UDim2.new(0, 55, 0, 5)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = item.name
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextScaled = true
+        nameLabel.Font = Enum.Font.SourceSansBold
+        nameLabel.Parent = itemFrame
+        
+        local descLabel = Instance.new("TextLabel")
+        descLabel.Size = UDim2.new(1, -60, 0, 20)
+        descLabel.Position = UDim2.new(0, 55, 0, 30)
+        descLabel.BackgroundTransparency = 1
+        descLabel.Text = item.description .. " (" .. item.duration .. ")"
+        descLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+        descLabel.TextScaled = true
+        descLabel.Font = Enum.Font.SourceSans
+        descLabel.Parent = itemFrame
+        
+        local buyItemBtn = Instance.new("TextButton")
+        buyItemBtn.Size = UDim2.new(1, -60, 0, 30)
+        buyItemBtn.Position = UDim2.new(0, 55, 0, 55)
+        buyItemBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+        
+        local currencyIcon = item.currency == "coins" and "💰" or (item.currency == "tickets" and "🎫" or "💎")
+        buyItemBtn.Text = string.format("Comprar - %d %s", item.cost, currencyIcon)
+        buyItemBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        buyItemBtn.TextScaled = true
+        buyItemBtn.Font = Enum.Font.SourceSansBold
+        buyItemBtn.Parent = itemFrame
+        
+        local buyItemCorner = Instance.new("UICorner")
+        buyItemCorner.CornerRadius = UDim.new(0, 6)
+        buyItemCorner.Parent = buyItemBtn
+        
+        itemButtons[item.name] = buyItemBtn
+    end
+    
+    -- Sección de Historial de Compras
+    local historySection = Instance.new("Frame")
+    historySection.Name = "HistorySection"
+    historySection.Size = UDim2.new(1, -20, 0, 250)
+    historySection.Position = UDim2.new(0, 10, 0, 790)
+    historySection.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+    historySection.Parent = shopFrame
+    
+    local historyCorner = Instance.new("UICorner")
+    historyCorner.CornerRadius = UDim.new(0, 10)
+    historyCorner.Parent = historySection
+    
+    local historyTitle = Instance.new("TextLabel")
+    historyTitle.Size = UDim2.new(1, 0, 0, 40)
+    historyTitle.Position = UDim2.new(0, 0, 0, 5)
+    historyTitle.BackgroundTransparency = 1
+    historyTitle.Text = "📜 Historial de Compras"
+    historyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    historyTitle.TextScaled = true
+    historyTitle.Font = Enum.Font.SourceSansBold
+    historyTitle.Parent = historySection
+    
+    local historyScroll = Instance.new("ScrollingFrame")
+    historyScroll.Name = "HistoryScroll"
+    historyScroll.Size = UDim2.new(1, -20, 1, -50)
+    historyScroll.Position = UDim2.new(0, 10, 0, 40)
+    historyScroll.BackgroundTransparency = 1
+    historyScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    historyScroll.ScrollBarThickness = 5
+    historyScroll.Parent = historySection
+    
+    local historyLayout = Instance.new("UIListLayout")
+    historyLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    historyLayout.Padding = UDim.new(0, 5)
+    historyLayout.Parent = historyScroll
+    
+    return shopFrame, purchaseButtons, itemButtons, balanceLabel, historyScroll
+end
+
+local function createSettingsPanel(parent)
+    local settingsFrame = Instance.new("Frame")
+    settingsFrame.Name = "SettingsFrame"
+    settingsFrame.Size = UDim2.new(1, -20, 1, -20)
+    settingsFrame.Position = UDim2.new(0, 10, 0, 10)
+    settingsFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+    settingsFrame.Parent = parent
+    settingsFrame.Visible = false
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 15)
+    corner.Parent = settingsFrame
+    
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 50)
     title.Position = UDim2.new(0, 0, 0, 10)
     title.BackgroundTransparency = 1
-    title.Text = "🛒 Tienda Premium"
+    title.Text = "⚙️ Configuración"
     title.TextColor3 = Color3.fromRGB(255, 255, 255)
     title.TextScaled = true
     title.Font = Enum.Font.SourceSansBold
-    title.Parent = shopFrame
+    title.Parent = settingsFrame
     
-    -- Sección de Tickets Premium
-    local ticketsSection = Instance.new("Frame")
-    ticketsSection.Name = "TicketsSection"
-    ticketsSection.Size = UDim2.new(1, -20, 0, 300)
-    ticketsSection.Position = UDim2.new(0, 10, 0, 70)
-    ticketsSection.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
-    ticketsSection.Parent = shopFrame
+    return settingsFrame
+end
+
+-- Crear interface principal
+local function createMainInterface()
+    -- Servicios de Roblox
+    local TweenService = game:GetService("TweenService")
+    local RunService = game:GetService("RunService")
     
-    local ticketsCorner = Instance.new("UICorner")
-    ticketsCorner.CornerRadius = UDim.new(0, 10)
-    ticketsCorner.Parent = ticketsSection
+    local mainGui, uiElements = createMainUI()
     
-    local ticketsTitle = Instance.new("TextLabel")
-    ticketsTitle.Size = UDim2.new(1, 0, 0, 40)
-    ticketsTitle.Position = UDim2.new(0, 0, 0, 10)
-    ticketsTitle.BackgroundTransparency = 1
-    ticketsTitle.Text = "🎫 Tickets Premium"
-    ticketsTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ticketsTitle.TextScaled = true
-    ticketsTitle.Font = Enum.Font.SourceSansBold
-    ticketsTitle.Parent = ticketsSection
+    -- Conectar eventos remotos
+    local eventsFolder = ReplicatedStorage:WaitForChild("RemoteEvents")
     
-    local ticketProducts = {
-        {name = "Pack Pequeño", tickets = 10, robux = 99, productId = 123456789},
-        {name = "Pack Mediano", tickets = 50, robux = 399, productId = 123456790, bonus = 5},
-        {name = "Pack Grande", tickets = 100, robux = 699, productId = 123456791, bonus = 15},
-        {name = "Pack Mega", tickets = 250, robux = 1499, productId = 123456792, bonus = 50}
-    }
+    -- Crear todos los paneles
+    local collectionPanel, searchBox, rarityFilters, sortDropdown, charactersGrid = createCollectionPanel(uiElements.contentPanel)
+    local gachaPanel, singleBtn, multiBtn = createGachaPanel(uiElements.contentPanel)
+    local battlePanel = createBattlePanel(uiElements.contentPanel)
+    local trainingPanel, trainingCharactersScroll, trainingButtons, trainingActiveScroll, trainingAvailablePanel, trainingDailyStats, trainingBoostBtn = createTrainingPanel(uiElements.contentPanel)
+    local shopPanel, shopPurchaseButtons, shopItemButtons, shopBalanceLabel, shopHistoryScroll = createShopPanel(uiElements.contentPanel)
+    local settingsPanel = createSettingsPanel(uiElements.contentPanel)
     
-    for i, product in ipairs(ticketProducts) do
-        local productFrame = Instance.new("Frame")
-        productFrame.Size = UDim2.new(0.23, 0, 0, 200)
-        productFrame.Position = UDim2.new((i-1)*0.25, 10, 0, 60)
-        productFrame.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
-        productFrame.Parent = ticketsSection
+    -- Estado actual del panel
+    local currentPanel = "Collection"
+    collectionPanel.Visible = true -- Mostrar colección por defecto
+    
+    -- Función para cambiar paneles
+    local function switchToPanel(panelName)
+        -- Ocultar todos los paneles
+        collectionPanel.Visible = false
+        gachaPanel.Visible = false
+        battlePanel.Visible = false
+        trainingPanel.Visible = false
+        shopPanel.Visible = false
+        settingsPanel.Visible = false
         
-        local productCorner = Instance.new("UICorner")
-        productCorner.CornerRadius = UDim.new(0, 10)
-        productCorner.Parent = productFrame
+        -- Mostrar el panel seleccionado
+        if panelName == "Collection" then
+            collectionPanel.Visible = true
+        elseif panelName == "Gacha" then
+            gachaPanel.Visible = true
+        elseif panelName == "Battle" then
+            battlePanel.Visible = true
+        elseif panelName == "Training" then
+            trainingPanel.Visible = true
+        elseif panelName == "Shop" then
+            shopPanel.Visible = true
+        elseif panelName == "Settings" then
+            settingsPanel.Visible = true
+        end
         
-        local productName = Instance.new("TextLabel")
-        productName.Size = UDim2.new(1, -10, 0, 30)
-        productName.Position = UDim2.new(0, 5, 0, 10)
-        productName.BackgroundTransparency = 1
-        productName.Text = product.name
-        productName.TextColor3 = Color3.fromRGB(255, 255, 255)
-        productName.TextScaled = true
-        productName.Font = Enum.Font.SourceSansBold
-        productName.Parent = productFrame
-        
-        local ticketIcon = Instance.new("TextLabel")
-        ticketIcon.Size = UDim2.new(1, -10, 0, 60)
-        ticketIcon.Position = UDim2.new(0, 5, 0, 45)
-        ticketIcon.BackgroundTransparency = 1
-        ticketIcon.Text = "🎫"
+        currentPanel = panelName
+    end
         ticketIcon.TextColor3 = Color3.fromRGB(0, 255, 127)
         ticketIcon.TextScaled = true
         ticketIcon.Font = Enum.Font.SourceSans
@@ -1351,7 +1819,7 @@ local function initializeClient()
     local collectionPanel, searchBox, rarityFilters, sortDropdown, charactersGrid = createCollectionPanel(uiElements.contentPanel)
     local gachaPanel, singleBtn, multiBtn = createGachaPanel(uiElements.contentPanel)
     local battlePanel = createBattlePanel(uiElements.contentPanel)
-    local trainingPanel, trainingCharactersScroll, trainingButtons, trainingActiveScroll, trainingAvailablePanel = createTrainingPanel(uiElements.contentPanel)
+    local trainingPanel, trainingCharactersScroll, trainingButtons, trainingActiveScroll, trainingAvailablePanel, trainingDailyStats, trainingBoostBtn = createTrainingPanel(uiElements.contentPanel)
     local shopPanel = createShopPanel(uiElements.contentPanel)
     
     -- Estado actual del panel
@@ -1707,6 +2175,47 @@ local function initializeClient()
     local selectedCharacterForTraining = nil
     local selectedTrainingType = nil
     local activeTrainings = {}
+    local dailyTrainingCount = 0
+    local dailyExpGained = 0
+    
+    -- Funciones auxiliares del entrenamiento
+    local function showTrainingResults(improvements, leveledUp, experienceGained)
+        local resultText = "🎉 ¡Entrenamiento Completado!\n\n"
+        
+        for statName, gain in pairs(improvements) do
+            resultText = resultText .. "• " .. statName:upper() .. ": +" .. gain .. "\n"
+        end
+        
+        if leveledUp then
+            resultText = resultText .. "\n⭐ ¡NIVEL AUMENTADO! ⭐"
+        end
+        
+        if experienceGained and experienceGained > 0 then
+            resultText = resultText .. "\n📈 EXP: +" .. experienceGained
+        end
+        
+        showNotification("Entrenamiento Exitoso", resultText, "success", 5)
+        
+        -- Actualizar estadísticas diarias
+        dailyExpGained = dailyExpGained + (experienceGained or 0)
+        updateDailyTrainingStats()
+    end
+    
+    local function updateDailyTrainingStats()
+        if trainingDailyStats then
+            local dailyCount = trainingDailyStats:FindFirstChild("DailyCount")
+            local expGained = trainingDailyStats:FindFirstChild("ExperienceGained")
+            
+            if dailyCount then
+                dailyCount.Text = dailyTrainingCount .. "/5"
+                dailyCount.TextColor3 = dailyTrainingCount >= 5 and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(0, 255, 127)
+            end
+            
+            if expGained then
+                expGained.Text = "⭐ EXP Total Ganada Hoy: " .. dailyExpGained
+            end
+        end
+    end
     
     -- Función para crear tarjeta de personaje pequeña para entrenamiento
     local function createTrainingCharacterCard(character, parent)
@@ -1819,11 +2328,11 @@ local function initializeClient()
         return card
     end
     
-    -- Función para crear elemento de entrenamiento activo
-    local function createActiveTrainingElement(character, trainingType, endTime)
+    -- Función para crear elemento de entrenamiento activo con progreso en tiempo real
+    local function createActiveTrainingElement(character, trainingType, endTime, startTime)
         local element = Instance.new("Frame")
         element.Name = "ActiveTraining_" .. character.id
-        element.Size = UDim2.new(1, -10, 0, 80)
+        element.Size = UDim2.new(1, -10, 0, 120)
         element.BackgroundColor3 = Color3.fromRGB(70, 70, 90)
         element.Parent = trainingActiveScroll
         
@@ -1831,113 +2340,213 @@ local function initializeClient()
         corner.CornerRadius = UDim.new(0, 8)
         corner.Parent = element
         
+        -- Panel de información del personaje
+        local characterInfo = Instance.new("Frame")
+        characterInfo.Size = UDim2.new(0.3, 0, 1, 0)
+        characterInfo.Position = UDim2.new(0, 5, 0, 0)
+        characterInfo.BackgroundTransparency = 1
+        characterInfo.Parent = element
+        
+        local characterIcon = Instance.new("Frame")
+        characterIcon.Size = UDim2.new(1, 0, 0.6, 0)
+        characterIcon.Position = UDim2.new(0, 0, 0, 0)
+        characterIcon.BackgroundColor3 = rarityColors[character.rarity] or Color3.fromRGB(200, 200, 200)
+        characterIcon.Parent = characterInfo
+        
+        local iconCorner = Instance.new("UICorner")
+        iconCorner.CornerRadius = UDim.new(0, 6)
+        iconCorner.Parent = characterIcon
+        
+        local iconLabel = Instance.new("TextLabel")
+        iconLabel.Size = UDim2.new(1, 0, 1, 0)
+        iconLabel.BackgroundTransparency = 1
+        iconLabel.Text = character.name:sub(1, 2):upper()
+        iconLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        iconLabel.TextScaled = true
+        iconLabel.Font = Enum.Font.SourceSansBold
+        iconLabel.Parent = characterIcon
+        
         local nameLabel = Instance.new("TextLabel")
-        nameLabel.Size = UDim2.new(0.3, 0, 0, 25)
-        nameLabel.Position = UDim2.new(0, 10, 0, 5)
+        nameLabel.Size = UDim2.new(1, 0, 0.4, 0)
+        nameLabel.Position = UDim2.new(0, 0, 0.6, 0)
         nameLabel.BackgroundTransparency = 1
         nameLabel.Text = character.name
         nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
         nameLabel.TextScaled = true
         nameLabel.Font = Enum.Font.SourceSansBold
-        nameLabel.Parent = element
+        nameLabel.Parent = characterInfo
+        
+        -- Panel de progreso
+        local progressInfo = Instance.new("Frame")
+        progressInfo.Size = UDim2.new(0.5, 0, 1, 0)
+        progressInfo.Position = UDim2.new(0.3, 10, 0, 0)
+        progressInfo.BackgroundTransparency = 1
+        progressInfo.Parent = element
         
         local typeLabel = Instance.new("TextLabel")
-        typeLabel.Size = UDim2.new(0.3, 0, 0, 20)
-        typeLabel.Position = UDim2.new(0, 10, 0, 30)
+        typeLabel.Size = UDim2.new(1, 0, 0, 25)
+        typeLabel.Position = UDim2.new(0, 0, 0, 5)
         typeLabel.BackgroundTransparency = 1
-        typeLabel.Text = "Entrenando: " .. trainingType
-        typeLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+        typeLabel.Text = "🎯 " .. trainingType
+        typeLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
         typeLabel.TextScaled = true
-        typeLabel.Font = Enum.Font.SourceSans
-        typeLabel.Parent = element
+        typeLabel.Font = Enum.Font.SourceSansBold
+        typeLabel.Parent = progressInfo
+        
+        -- Barra de progreso
+        local progressBarBg = Instance.new("Frame")
+        progressBarBg.Size = UDim2.new(1, 0, 0, 20)
+        progressBarBg.Position = UDim2.new(0, 0, 0, 35)
+        progressBarBg.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+        progressBarBg.Parent = progressInfo
+        
+        local progressBarCorner = Instance.new("UICorner")
+        progressBarCorner.CornerRadius = UDim.new(0, 10)
+        progressBarCorner.Parent = progressBarBg
         
         local progressBar = Instance.new("Frame")
-        progressBar.Size = UDim2.new(0.4, 0, 0, 20)
-        progressBar.Position = UDim2.new(0.35, 0, 0, 10)
-        progressBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        progressBar.Parent = element
+        progressBar.Name = "ProgressBar"
+        progressBar.Size = UDim2.new(0, 0, 1, 0)
+        progressBar.Position = UDim2.new(0, 0, 0, 0)
+        progressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+        progressBar.Parent = progressBarBg
         
-        local progressCorner = Instance.new("UICorner")
-        progressCorner.CornerRadius = UDim.new(0, 10)
-        progressCorner.Parent = progressBar
-        
-        local progressFill = Instance.new("Frame")
-        progressFill.Name = "ProgressFill"
-        progressFill.Size = UDim2.new(0, 0, 1, 0)
-        progressFill.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
-        progressFill.Parent = progressBar
-        
-        local fillCorner = Instance.new("UICorner")
-        fillCorner.CornerRadius = UDim.new(0, 10)
-        fillCorner.Parent = progressFill
+        local progressBarFillCorner = Instance.new("UICorner")
+        progressBarFillCorner.CornerRadius = UDim.new(0, 10)
+        progressBarFillCorner.Parent = progressBar
         
         local timeLabel = Instance.new("TextLabel")
         timeLabel.Name = "TimeLabel"
-        timeLabel.Size = UDim2.new(0.4, 0, 0, 20)
-        timeLabel.Position = UDim2.new(0.35, 0, 0, 35)
+        timeLabel.Size = UDim2.new(1, 0, 0, 25)
+        timeLabel.Position = UDim2.new(0, 0, 0, 60)
         timeLabel.BackgroundTransparency = 1
-        timeLabel.Text = "Tiempo restante: Calculando..."
+        timeLabel.Text = "⏰ Calculando..."
         timeLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
         timeLabel.TextScaled = true
         timeLabel.Font = Enum.Font.SourceSans
-        timeLabel.Parent = element
+        timeLabel.Parent = progressInfo
+        
+        local beforeStatsLabel = Instance.new("TextLabel")
+        beforeStatsLabel.Size = UDim2.new(1, 0, 0, 20)
+        beforeStatsLabel.Position = UDim2.new(0, 0, 0, 90)
+        beforeStatsLabel.BackgroundTransparency = 1
+        beforeStatsLabel.Text = "📊 Antes: ATK:" .. (character.attributes.strength or 0) .. " DEF:" .. (character.attributes.resistance or 0)
+        beforeStatsLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+        beforeStatsLabel.TextScaled = true
+        beforeStatsLabel.Font = Enum.Font.SourceSans
+        beforeStatsLabel.Parent = progressInfo
+        
+        -- Panel de botones
+        local buttonPanel = Instance.new("Frame")
+        buttonPanel.Size = UDim2.new(0.2, 0, 1, 0)
+        buttonPanel.Position = UDim2.new(0.8, 0, 0, 0)
+        buttonPanel.BackgroundTransparency = 1
+        buttonPanel.Parent = element
         
         local collectBtn = Instance.new("TextButton")
         collectBtn.Name = "CollectButton"
-        collectBtn.Size = UDim2.new(0.2, -10, 0, 30)
-        collectBtn.Position = UDim2.new(0.8, 0, 0, 25)
-        collectBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        collectBtn.Text = "Recoger"
+        collectBtn.Size = UDim2.new(1, -10, 0, 35)
+        collectBtn.Position = UDim2.new(0, 5, 0, 10)
+        collectBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        collectBtn.Text = "✅ Reclamar"
         collectBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         collectBtn.TextScaled = true
         collectBtn.Font = Enum.Font.SourceSansBold
         collectBtn.Visible = false
-        collectBtn.Parent = element
+        collectBtn.Parent = buttonPanel
         
         local collectCorner = Instance.new("UICorner")
         collectCorner.CornerRadius = UDim.new(0, 6)
         collectCorner.Parent = collectBtn
         
-        -- Función para actualizar progreso
-        local function updateProgress()
-            local currentTime = tick()
-            local totalDuration = endTime - (currentTime - (endTime - 120)) -- 120 segundos por defecto
-            local timeRemaining = endTime - currentTime
-            
-            if timeRemaining <= 0 then
-                progressFill.Size = UDim2.new(1, 0, 1, 0)
-                timeLabel.Text = "¡Entrenamiento completado!"
-                timeLabel.TextColor3 = Color3.fromRGB(0, 255, 127)
-                collectBtn.Visible = true
-                collectBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
-            else
-                local progress = 1 - (timeRemaining / totalDuration)
-                progressFill.Size = UDim2.new(progress, 0, 1, 0)
-                
-                local minutes = math.floor(timeRemaining / 60)
-                local seconds = math.floor(timeRemaining % 60)
-                timeLabel.Text = string.format("Tiempo restante: %d:%02d", minutes, seconds)
-            end
-        end
+        local boostBtn = Instance.new("TextButton")
+        boostBtn.Name = "BoostButton"
+        boostBtn.Size = UDim2.new(1, -10, 0, 35)
+        boostBtn.Position = UDim2.new(0, 5, 0, 55)
+        boostBtn.BackgroundColor3 = Color3.fromRGB(255, 215, 0)
+        boostBtn.Text = "⚡ Acelerar\n50 💎"
+        boostBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+        boostBtn.TextScaled = true
+        boostBtn.Font = Enum.Font.SourceSansBold
+        boostBtn.Parent = buttonPanel
         
-        -- Actualizar progreso cada segundo
-        spawn(function()
-            while element.Parent do
-                updateProgress()
-                wait(1)
+        local boostCorner = Instance.new("UICorner")
+        boostCorner.CornerRadius = UDim.new(0, 6)
+        boostCorner.Parent = boostBtn
+        
+        -- Actualizar progreso en tiempo real
+        local connection
+        connection = game:GetService("RunService").Heartbeat:Connect(function()
+            if not element.Parent then
+                connection:Disconnect()
+                return
+            end
+            
+            local currentTime = tick()
+            local totalDuration = endTime - (startTime or (endTime - 1800)) -- 30 min default
+            local elapsed = currentTime - (startTime or (endTime - 1800))
+            local remainingTime = endTime - currentTime
+            
+            if remainingTime <= 0 then
+                -- Entrenamiento completado
+                timeLabel.Text = "✅ ¡COMPLETADO!"
+                timeLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                progressBar.Size = UDim2.new(1, 0, 1, 0)
+                progressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+                collectBtn.Visible = true
+                boostBtn.Visible = false
+            else
+                -- En progreso
+                local progress = math.max(0, math.min(1, elapsed / totalDuration))
+                progressBar.Size = UDim2.new(progress, 0, 1, 0)
+                
+                local hours = math.floor(remainingTime / 3600)
+                local minutes = math.floor((remainingTime % 3600) / 60)
+                local seconds = math.floor(remainingTime % 60)
+                
+                if hours > 0 then
+                    timeLabel.Text = string.format("⏰ %dh %dm %ds", hours, minutes, seconds)
+                else
+                    timeLabel.Text = string.format("⏰ %dm %ds", minutes, seconds)
+                end
+                
+                collectBtn.Visible = false
+                boostBtn.Visible = true
             end
         end)
         
+        -- Conectar botones
         collectBtn.Activated:Connect(function()
-            local trainCharacter = eventsFolder:WaitForChild("TrainCharacter")
-            local success, result = trainCharacter:InvokeServer(character.id, trainingType)
-            
-            if success then
-                element:Destroy()
-                -- Recargar lista de personajes disponibles
-                loadTrainingCharacters()
-                -- TODO: Mostrar notificación de éxito
-            end
+            -- Usar el RemoteFunction correcto para completar entrenamiento
+            pcall(function()
+                local completeTraining = eventsFolder:FindFirstChild("CompleteTraining")
+                if completeTraining then
+                    local success, result = completeTraining:InvokeServer(character.id)
+                    if success then
+                        showTrainingResults(result.improvements, result.leveledUp, result.experienceGained)
+                        element:Destroy()
+                        loadTrainingCharacters()
+                        updateDailyTrainingStats()
+                    else
+                        showNotification("Error", result or "No se pudo completar el entrenamiento", "error", 3)
+                    end
+                end
+            end)
+        end)
+        
+        boostBtn.Activated:Connect(function()
+            -- Usar el RemoteFunction correcto para acelerar entrenamiento
+            pcall(function()
+                local boostTraining = eventsFolder:FindFirstChild("BoostTraining")
+                if boostTraining then
+                    local success, result = boostTraining:InvokeServer(character.id)
+                    if success then
+                        showNotification("¡Acelerado!", "Entrenamiento completado instantáneamente", "success", 2)
+                    else
+                        showNotification("Error", result or "No se pudo acelerar el entrenamiento", "error", 3)
+                    end
+                end
+            end)
         end)
         
         return element
@@ -1964,37 +2573,108 @@ local function initializeClient()
         end
     end
     
-    -- Conectar botones de tipo de entrenamiento
+    -- Conectar botones de tipo de entrenamiento con funcionalidad mejorada
     for trainingType, button in pairs(trainingButtons) do
         button.Activated:Connect(function()
             if not selectedCharacterForTraining then
-                -- TODO: Mostrar notificación de error
-                print("Selecciona un personaje primero")
+                showNotification("⚠️ Error", "Selecciona un personaje primero", "error", 3)
+                return
+            end
+            
+            -- Verificar límite diario
+            if dailyTrainingCount >= 5 then
+                showNotification("⚠️ Límite Alcanzado", "Has alcanzado el límite diario de entrenamientos (5/5)", "warning", 4)
                 return
             end
             
             selectedTrainingType = trainingType
             
-            local trainCharacter = eventsFolder:WaitForChild("TrainCharacter")
-            local success, result = trainCharacter:InvokeServer(selectedCharacterForTraining.id, trainingType)
+            -- Mostrar confirmación con detalles del entrenamiento
+            local trainingData = {
+                STRENGTH = {name = "Fuerza", duration = 30, cost = 100},
+                INTELLIGENCE = {name = "Inteligencia", duration = 30, cost = 100},
+                SPEED = {name = "Velocidad", duration = 30, cost = 100},
+                RESISTANCE = {name = "Resistencia", duration = 30, cost = 100},
+                CHARM = {name = "Carisma", duration = 30, cost = 100},
+                LUCK = {name = "Suerte", duration = 45, cost = 150},
+                BALANCED = {name = "Equilibrado", duration = 60, cost = 300}
+            }
             
-            if success then
-                -- Crear elemento de entrenamiento activo
-                local endTime = tick() + 120 -- 2 minutos por defecto
-                createActiveTrainingElement(selectedCharacterForTraining, trainingType, endTime)
+            local training = trainingData[trainingType]
+            if not training then return end
+            
+            showNotification("🎯 Iniciando Entrenamiento", 
+                string.format("Entrenando %s en %s\nDuración: %d min | Costo: %d 💰", 
+                selectedCharacterForTraining.name, training.name, training.duration, training.cost), 
+                "info", 3)
+            
+            -- Usar RemoteFunction correcto
+            pcall(function()
+                local startTraining = eventsFolder:FindFirstChild("StartTraining") or eventsFolder:WaitForChild("TrainCharacter")
+                local success, result = startTraining:InvokeServer(selectedCharacterForTraining.id, trainingType)
                 
-                -- Actualizar moneda
-                local newCurrency = CharacterDatabase.LoadPlayerData(player.UserId).currency
-                updateCurrencyDisplay(newCurrency, uiElements)
-                
-                -- Limpiar selección
-                selectedCharacterForTraining = nil
-                selectedTrainingType = nil
-                loadTrainingCharacters()
-                
-                print("Entrenamiento iniciado para", selectedCharacterForTraining and selectedCharacterForTraining.name or "personaje")
-            else
-                print("Error iniciando entrenamiento:", result)
+                if success then
+                    -- Crear elemento de entrenamiento activo con tiempo real
+                    local startTime = tick()
+                    local endTime = startTime + (training.duration * 60) -- Convertir minutos a segundos
+                    createActiveTrainingElement(selectedCharacterForTraining, trainingType, endTime, startTime)
+                    
+                    -- Actualizar contadores
+                    dailyTrainingCount = dailyTrainingCount + 1
+                    updateDailyTrainingStats()
+                    
+                    -- Actualizar moneda (esto debería venir del servidor)
+                    updateCurrencyDisplay({coins = (result.newCoins or 0), tickets = 0, premiumCurrency = 0}, uiElements)
+                    
+                    -- Limpiar selección
+                    selectedCharacterForTraining = nil
+                    selectedTrainingType = nil
+                    loadTrainingCharacters()
+                    
+                    showNotification("✅ Éxito", "Entrenamiento iniciado para " .. (selectedCharacterForTraining and selectedCharacterForTraining.name or "personaje"), "success", 2)
+                else
+                    showNotification("❌ Error", result or "No se pudo iniciar el entrenamiento", "error", 4)
+                end
+            end)
+        end)
+    end
+    
+    -- Conectar botón de aceleración global
+    if trainingBoostBtn then
+        trainingBoostBtn.Activated:Connect(function()
+            -- Encontrar entrenamientos activos
+            local activeTrainingElements = {}
+            for _, child in pairs(trainingActiveScroll:GetChildren()) do
+                if child.Name:match("ActiveTraining_") then
+                    table.insert(activeTrainingElements, child)
+                end
+            end
+            
+            if #activeTrainingElements == 0 then
+                showNotification("⚠️ Sin Entrenamientos", "No tienes entrenamientos activos para acelerar", "warning", 3)
+                return
+            end
+            
+            -- Mostrar confirmación
+            showNotification("⚡ Acelerar Todo", 
+                string.format("¿Acelerar %d entrenamientos activos?\nCosto: %d 💎", 
+                #activeTrainingElements, #activeTrainingElements * 50), 
+                "info", 4)
+            
+            -- Acelerar todos los entrenamientos activos
+            for _, element in ipairs(activeTrainingElements) do
+                local characterId = element.Name:match("ActiveTraining_(.+)")
+                if characterId then
+                    pcall(function()
+                        local boostTraining = eventsFolder:FindFirstChild("BoostTraining")
+                        if boostTraining then
+                            local success, result = boostTraining:InvokeServer(characterId)
+                            if success then
+                                showNotification("⚡ Acelerado", "Entrenamiento completado instantáneamente", "success", 1)
+                            end
+                        end
+                    end)
+                end
             end
         end)
     end
