@@ -14,6 +14,7 @@ local BattleManager = require(script.Parent.CombatSystem.BattleManager)
 local TrainingSystem = require(script.Parent.CombatSystem.TrainingSystem)
 local PurchaseHandler = require(script.Parent.MonetizationSystem.PurchaseHandler)
 local SkinManager = require(script.Parent.MonetizationSystem.SkinManager)
+local SecuritySystem = require(script.Parent.SecuritySystem)
 
 -- Obtener eventos remotos
 local eventsFolder = ReplicatedStorage:WaitForChild("RemoteEvents")
@@ -47,6 +48,28 @@ print("🎮 Iniciando Waifu & Husbando Collection Game...")
 -- === HANDLERS DE GACHA ===
 pullGacha.OnServerInvoke = function(player, ticketType, count)
     local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "PullGacha", {
+        ticketType = ticketType,
+        count = count
+    })
+    
+    if not authorized then
+        warn("PullGacha bloqueado para " .. player.Name .. ": " .. reason)
+        return nil, "Acción no autorizada: " .. reason
+    end
+    
+    -- Validar parámetros de entrada
+    if not ticketType or type(ticketType) ~= "string" then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "PullGacha", param = "ticketType"})
+        return nil, "Tipo de ticket inválido"
+    end
+    
+    if count and (type(count) ~= "number" or count < 1 or count > 10) then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "PullGacha", param = "count"})
+        return nil, "Cantidad inválida"
+    end
     
     if count and count > 1 then
         -- Multi-pull
@@ -84,7 +107,15 @@ pullGacha.OnServerInvoke = function(player, ticketType, count)
 end
 
 getPlayerCurrency.OnServerInvoke = function(player)
-    local playerData = CharacterDatabase.LoadPlayerData(player.UserId)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "GetPlayerCurrency")
+    if not authorized then
+        return {freeTickets = 0, premiumCurrency = 0, coins = 0}
+    end
+    
+    local playerData = CharacterDatabase.LoadPlayerData(playerId)
     return playerData and playerData.currency or {freeTickets = 0, premiumCurrency = 0, coins = 0}
 end
 
@@ -94,20 +125,54 @@ end
 
 -- === HANDLERS DE PERSONAJES ===
 getPlayerCharacters.OnServerInvoke = function(player)
-    return CharacterDatabase.GetPlayerCharacters(player.UserId)
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "GetPlayerCharacters")
+    if not authorized then
+        warn("GetPlayerCharacters bloqueado para " .. player.Name .. ": " .. reason)
+        return {}
+    end
+    
+    return CharacterDatabase.GetPlayerCharacters(playerId)
 end
 
 trainCharacter.OnServerInvoke = function(player, characterId, trainingType)
-    if not characterId or not trainingType then
-        return false, "Parámetros inválidos"
+    local playerId = player.UserId
+    
+    -- Validación de seguridad
+    local authorized, reason = SecuritySystem.IsPlayerAuthorized(playerId, "TrainCharacter")
+    if not authorized then
+        return false, "Acción no autorizada: " .. reason
+    end
+    
+    -- Validar parámetros
+    if not characterId or type(characterId) ~= "string" then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "TrainCharacter", param = "characterId"})
+        return false, "ID de personaje inválido"
+    end
+    
+    if not trainingType or type(trainingType) ~= "string" then
+        SecuritySystem.AddViolation(playerId, "INVALID_PARAMETER", {action = "TrainCharacter", param = "trainingType"})
+        return false, "Tipo de entrenamiento inválido"
+    end
+    
+    -- Verificar que el personaje pertenece al jugador
+    local character = CharacterDatabase.LoadCharacter(characterId)
+    if not character or character.ownerId ~= tostring(playerId) then
+        SecuritySystem.AddViolation(playerId, "OWNERSHIP_VIOLATION", {
+            action = "TrainCharacter",
+            characterId = characterId
+        })
+        return false, "No tienes permiso para entrenar este personaje"
     end
     
     -- Verificar si ya está completando entrenamiento
     local status = TrainingSystem.GetTrainingStatus(characterId)
     if status and status.completed then
-        return TrainingSystem.CompleteTraining(characterId, player.UserId)
+        return TrainingSystem.CompleteTraining(characterId, playerId)
     else
-        return TrainingSystem.StartTraining(characterId, player.UserId, trainingType)
+        return TrainingSystem.StartTraining(characterId, playerId, trainingType)
     end
 end
 
